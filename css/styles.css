@@ -1,0 +1,19 @@
+body {
+    font-family: "helvetica";
+}
+
+canvas {
+	position: absolute;
+	top: 60px;
+	left: 20px;
+	background: transparent;
+}
+
+#background {
+  z-index: 0;
+}
+
+#phaserContainer {
+  width: 800px;
+  height: 600px;
+}

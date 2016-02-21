@@ -8,8 +8,15 @@ $(document).ready(function (){
   var goRight = [71, 79, 82, 73, 71, 72, 84];
   var goLeft = [71, 79, 76, 69, 70, 84];
   var alterGravity = [65, 76, 84, 69, 82, 71, 82, 65, 86, 73, 84, 89];
+<<<<<<< HEAD
   var autocomplete = false;
   var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
+=======
+  var codeLine = [];
+  var autocomplete = false;
+  var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
+  var rightAutocomplete = false, leftAutocomplete = false, alterAutocomplete = false;
+>>>>>>> master
 =======
   
   

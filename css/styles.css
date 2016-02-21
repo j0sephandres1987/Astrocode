@@ -2,18 +2,61 @@ body {
     font-family: "helvetica";
 }
 
-canvas {
-	position: absolute;
-	top: 60px;
-	left: 20px;
-	background: transparent;
+.editor span {
+  width: auto;
+  padding: 4px;
+  height: auto;
+  z-index: 100;
+  color: grey;
+  position: absolute;
+  bottom: 480px;
+  left: 10px;
+  -webkit-box-shadow: 2px 2px 5px 0px rgba(207,207,207,0.27);
+  -moz-box-shadow: 2px 2px 5px 0px rgba(207,207,207,0.27);
+  box-shadow: 2px 2px 5px 0px rgba(207,207,207,0.27);
+  text-align: left;
+}
+
+.autocomplete-instruction:hover {
+  background-color: grey;
+  color: black;
 }
 
 #background {
   z-index: 0;
 }
 
+ul {
+  list-style-type: none;  
+}
+
+ul li {
+  cursor: pointer;  
+}
+
 #phaserContainer {
   width: 600px;
   height: 800px;
+  float: right;
+  right: 160px;
+}
+
+.editor {
+  position: absolute;
+  float: left;
+  top: 50px;
+  left: 60px;
+}
+
+textarea {
+  width: 500px;
+  height: 500px;
+}
+
+a {
+  font-size: 1.5em;
+  font-weight: bold;
+  color:cornflowerblue;
+  text-decoration: none;
+  float: right;
 }

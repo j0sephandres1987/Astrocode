@@ -7,10 +7,8 @@ $(document).ready(function (){
   var goRight = [71, 79, 82, 73, 71, 72, 84];
   var goLeft = [71, 79, 76, 69, 70, 84];
   var alterGravity = [65, 76, 84, 69, 82, 71, 82, 65, 86, 73, 84, 89];
-  var codeLine = [];
   var autocomplete = false;
   var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
-  var rightAutocomplete = false, leftAutocomplete = false, alterAutocomplete = false;
   function preload() {
     //load background image
     game.load.image("background", "img/background.png");
@@ -147,10 +145,8 @@ $(document).ready(function (){
 
             if(syntax) {
                 console.log("Index: "+instructionResult.type+" "+"Value: "+instructionResult.value);
-                //return instructionResult;
                 instructionResultArray.push(instructionResult);
             } else {
-                //return null;
                 instructionResultArray = null;
             }
         }

@@ -5,8 +5,9 @@ $(document).ready(function (){
   
   
   var gravity=100;//set the gravity Acceleration of the world  ( goUp<0<goDown)
- 
-  
+  var PlayerGravity=gravity; // PlayerGravity us a varuabke that will depend if magnetboots are activated or not
+  var MBoots = false ; // Set the MagnetBoots ON or OFF
+  var UpsideDown=false; // it identifies if the user is upsidedown the screen. this variable will be used in altergravity function as pivot for animations
   
   
   function preload() {
@@ -48,17 +49,12 @@ $(document).ready(function (){
     
    // setting the mass, if an object collides with another object, the result will be determined by velocity and mass
      astro.body.mass = 0.1;
- 
-   
-
-    
-   
      
      // Objects that will enable physics when added to the canvas
      
      game.physics.enable( [
          
-          platform_1,
+            platform_1,
             platform_2
             ], Phaser.Physics.P2JS);
          
@@ -70,60 +66,140 @@ $(document).ready(function (){
     //Objects that wont get  angular rotation under any condition
     
        astro.body.fixedRotation=true;
-      
        
-        
-       
-    
-     
   }
   
   function update(){
-      
-      
-game.physics.p2.gravity.y = gravity;
-
-      
+    game.physics.p2.gravity.y = gravity;
+    if(MBoots==true){
+       astro.body.velocity.y = PlayerGravity;
+    }
   }
   
   
   // FUNCTIONS
-  
+  //HORIZONTAL MOVEMENT SECTION
   function goRight() {
-    astro.animations.play('right');
-   var movement = setInterval(function(){
-       
-       
-                 astro.body.x +=2.2;
-             }, 10);
+      
+      //Depending of the gravity and the magnetboots it will show the proper animation
+      if(MBoots==false){
+    
+            if(gravity >=0){
+             astro.animations.play('right');
+            }
+            if(gravity <0){
+             astro.animations.play('left');}
+       }
+       if(MBoots==true){
+            if(PlayerGravity >=0){
+             astro.animations.play('right');
+            }
+            if(PlayerGravity <0){
+             astro.animations.play('left');}
+        }
+        //end of animation section
+        
+        
+        //The Astronaut will move to the right
+       var movement = setInterval(function(){astro.body.x +=2.2;}, 10);
              
-             setTimeout(function() {
-        clearInterval(movement);
-        astro.animations.stop(null,true);
-    }, 1000);
+             //Timeout will finish the execution of the function    
+                 setTimeout(function() {
+                     clearInterval(movement);
+                     astro.animations.stop(null,true);
+                    }, 1000);
+                
   }
+  
   
   function goLeft() {
-    astro.animations.play('left');
-    var movement = setInterval(function(){
-      astro.body.x -= 2.2;
-    }, 10);
-     setTimeout(function() {
-        clearInterval(movement);
-        astro.animations.stop(null,true);
-    }, 1000);
-  }
-  function alterGravity() {
-   // game.add.tween(astro).to( { angle: 180 }, 280, Phaser.Easing.Sinusoidal.InOut, true);
-    var movement = setInterval(function(){
-      astro.y -= 4;
-    }, 10);
+    //Depending of the gravity and the magnetboots it will show the proper animation
+        if(MBoots==false){
+             if(gravity >=0){
+               astro.animations.play('left');}
+             if(gravity <0){
+               astro.animations.play('right');}
+        }
+    
+        if(MBoots==true){
+              if(PlayerGravity >=0){
+                astro.animations.play('left');}
+              if(PlayerGravity <0){
+                astro.animations.play('Right');}
+        }
+       //end of animation section
+      
+       
+        //The Astronaut will move to the left
+          var movement = setInterval(function(){
+          astro.body.x -= 2.2;
+        }, 10);
+        
+         //Timeout will finish the execution of the function 
+         setTimeout(function() {
+            clearInterval(movement);
+            astro.animations.stop(null,true);
+        }, 1000);
   }
   
+  
+  // PLAYER FUNCTIONALITY GADGET SECTION
+  function alterGravity() {
+      
+    //Altergravity main functionality
+    gravity=gravity*-1;
+    
+    
+    //This condition will switch between false and true each time the function is invoked
+            if(UpsideDown==false){
+                UpsideDown=true;}
+            else{
+                if(UpsideDown==true){
+                    UpsideDown=false;
+                }
+            }
+    //Asynchronimous section that will allow the main character to rotate once it use altergravity and lock the new angle
+    setTimeout(function(){
+        astro.body.fixedRotation=false;
+        if(MBoots==false){
+            astro.body.angle+=180;
+          }
+     },100)
+    
+    setTimeout(function(){
+        astro.body.fixedRotation=true;
+     },120);
+
+      //end of Asynchronimous section
+      
+      
+    }
+  
+  
+   function magneticBoots() {
+       
+       Mboots =!Mboots
+       
+       if(MBoots ==false){MBoots=true;}
+        else{
+                if(MBoots==true){
+                     if( PlayerGravity != gravity) {
+                             astro.body.fixedRotation=false;
+                             astro.body.angle+=180;
+                       }
+                    MBoots=false;
+                  }
+           }
+    
+        PlayerGravity=gravity;
+        console.log("Mboots="+ MBoots);
+     
+  
+    }
   
   
   $("#phaserContainer").click(function() {
-    goRight();
+    alterGravity();
   });
   
 });

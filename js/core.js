@@ -1,4 +1,14 @@
 $(document).ready(function (){
+  var instructions = ["goRight", "goLeft", "alterGravity"];
+  var goRightKeys = [71, 79, 82, 73, 71, 72, 84];
+  var goLeftKeys = [71, 79, 76, 69, 70, 84];
+  var alterGravityKeys = [65, 76, 84, 69, 82, 71, 82, 65, 86, 73, 84, 89];
+  var keyCounter = 0;
+  var autocomplete = false;
+  var animationStop = false;
+  var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
+  var rightAutocomplete = false, leftAutocomplete = false, alterAutocomplete = false;
+  
   //init canvas
   var game = new Phaser.Game(600, 800, Phaser.AUTO, 'phaserContainer', { preload: preload, create: create, update: update });
   var background, astro;
@@ -82,7 +92,7 @@ $(document).ready(function (){
   // FUNCTIONS
   //HORIZONTAL MOVEMENT SECTION
   function goRight() {
-      
+      animationStop = false;
       //Depending of the gravity and the magnetboots it will show the proper animation
       if(MBoots==false){
     
@@ -109,12 +119,14 @@ $(document).ready(function (){
                  setTimeout(function() {
                      clearInterval(movement);
                      astro.animations.stop(null,true);
+                     animationStop = true;
                     }, 1000);
                 
   }
   
   
   function goLeft() {
+    animationStop = false;
     //Depending of the gravity and the magnetboots it will show the proper animation
         if(MBoots==false){
              if(gravity >=0){
@@ -141,6 +153,7 @@ $(document).ready(function (){
          setTimeout(function() {
             clearInterval(movement);
             astro.animations.stop(null,true);
+            animationStop = true;
         }, 1000);
   }
   
@@ -199,29 +212,117 @@ $(document).ready(function (){
   
     }
   
-  
-  
-  //FOR TESTING PURPOSES ONLY
-  $("#phaserContainer").click(function() {
-
-
-  alterGravity();
-       setTimeout(function() {
-           magneticBoots();
-        
-             setTimeout(function() {
-                 alterGravity();
-            
-                  setTimeout(function() {
-                     magneticBoots();
-            
-            
-            
-                     }, 1000);
-            
-                }, 1000);
-        
-       }, 1000);
+//complier
+  $("#run").click(function(event){ 
+    event.preventDefault();
+    var objectResult = checkSyntax($("#editor").val()); 
+    switch(objectResult[0].type) {
+      case 0:
+          goRight();
+          break;
+      case 1:
+          goLeft();
+          break;
+      default:
+          return null;
+    }
   });
+  
+  $(document).on('click', '.autocomplete-instruction', function() {
+    $("#editor").val($(this).text());
+    $(document).find('span').remove();
+  });
+  
+  $("#editor").keydown(function(event) {
+      if(event.keyCode == 13) {
+        keyCounter = 0;
+      } 
+      if(event.keyCode == goRightKeys[keyCounter]) {
+        goRightCoincidence = true;
+      } else {
+        goRightCoincidence = false;
+      }
+      if(event.keyCode == goLeftKeys[keyCounter]) {
+        goLeftCoincidence = true;
+        keyCounter++;
+      } else {
+        goLeftCoincidence = false;
+      }
+      if(event.keyCode == alterGravityKeys[keyCounter]) {
+        alterGravityCoincidence = true;
+      } else {
+        alterGravityCoincidence = false;
+      }
+      if(alterGravityCoincidence === true) {
+        //console.log(goRight);
+        if(autocomplete === false) {
+          autocomplete = $(".editor").append('<span></span>');
+        }
+        $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[2]+'</li></ul>');
+        
+      }
+      if(goRightCoincidence === true && goLeftCoincidence === true) {
+        //console.log(goRight);
+        if(autocomplete === false) {
+          autocomplete = $(".editor").append('<span></span>');
+        }
+        $(autocomplete).find('span').html('<ul><li class="autocomplete-instruction">'+instructions[0]+'</li><li class="autocomplete-instruction">'+instructions[1]+'</li></ul>');
+      }
+      if(goRightCoincidence === true && goLeftCoincidence === false) {
+        //console.log(goRight);
+        if(autocomplete === false) {
+          autocomplete = $(".editor").append('<span></span>');
+        }
+        $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[0]+'</li></ul>');
+      }
+      if(goRightCoincidence === false && goLeftCoincidence === true) {
+        //console.log(goRight);
+        if(autocomplete === false) {
+          autocomplete = $(".editor").append('<span></span>');
+        }
+        $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[1]+'</li></ul>');
+      }
+  });
+  
+  function checkSyntax(editorVal) {
+    var syntax = false;
+    //commands list
+    var instructionResultArray = [];
+    var linesNumber = editorVal.split(/\n/g).length;
+    var linesCode = editorVal.split(/\n/g);
+        for(var i=0; i<linesNumber;i++) {
+            var codeInstruction = linesCode[i].substring(0, linesCode[i].indexOf("("));
+            var value = linesCode[i].substring(linesCode[i].indexOf("(") +1, linesCode[i].lastIndexOf(")"));
+            if(
+                codeInstruction == "alterGravity"
+                &&
+                linesCode[i].indexOf(")") == linesCode[i].length - 1
+            ) {
+                instructionResult = {type: instructions.indexOf(codeInstruction), value: null };
+                syntax = true;
+            }
+            else if(
+                instructions.indexOf(codeInstruction) != -1
+                &&
+                linesCode[i].indexOf(")") == linesCode[i].length - 1
+                &&
+                !isNaN(value)
+
+            ) {
+                instructionResult = {type: instructions.indexOf(codeInstruction), value: value };
+                syntax = true;
+            }
+
+            if(syntax) {
+                console.log("Index: "+instructionResult.type+" "+"Value: "+instructionResult.value);
+                //return instructionResult;
+                instructionResultArray.push(instructionResult);
+            } else {
+                //return null;
+                instructionResultArray = null;
+            }
+        }
+        return instructionResultArray;
+    }
   
 });

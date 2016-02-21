@@ -3,6 +3,7 @@ $(document).ready(function (){
   var game = new Phaser.Game(600, 800, Phaser.AUTO, 'phaserContainer', { preload: preload, create: create, update: update });
   var background, astro;
   
+  //variables
   
   var gravity=100;//set the gravity Acceleration of the world  ( goUp<0<goDown)
   var PlayerGravity=gravity; // PlayerGravity us a varuabke that will depend if magnetboots are activated or not
@@ -12,7 +13,7 @@ $(document).ready(function (){
   
   function preload() {
     //load background image
-    game.load.image("background", "img/background.png");
+    game.load.image("background", "img/bglevel1.jpg");
     game.load.atlasJSONHash('astronaut','img/astroSheet.png', 'astroSheet.json');
     game.load.image("platform", "img/platform.png");
   }
@@ -21,6 +22,7 @@ $(document).ready(function (){
     platform_1 = game.add.sprite(150,700,'platform');
     platform_2 =game.add.sprite(150,400,'platform');
   }
+  
   function create() {
     game.world.setBounds(0, 0, 600, 1200);
     
@@ -178,7 +180,7 @@ $(document).ready(function (){
   
    function magneticBoots() {
        
-       Mboots =!Mboots
+      
        
        if(MBoots ==false){MBoots=true;}
         else{
@@ -198,8 +200,28 @@ $(document).ready(function (){
     }
   
   
+  
+  //FOR TESTING PURPOSES ONLY
   $("#phaserContainer").click(function() {
-    alterGravity();
+
+
+  alterGravity();
+       setTimeout(function() {
+           magneticBoots();
+        
+             setTimeout(function() {
+                 alterGravity();
+            
+                  setTimeout(function() {
+                     magneticBoots();
+            
+            
+            
+                     }, 1000);
+            
+                }, 1000);
+        
+       }, 1000);
   });
   
 });

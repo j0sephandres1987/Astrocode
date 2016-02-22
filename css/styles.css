@@ -1,15 +1,17 @@
 body {
     font-family: "helvetica";
+    background-color: #1a1b3a;
 }
 
 .editor span {
   width: auto;
+  background-color: #0a0d2b;
   padding: 4px;
   height: auto;
   z-index: 100;
-  color: grey;
+  color: white;
   position: absolute;
-  bottom: 480px;
+  bottom: 500px;
   left: 10px;
   -webkit-box-shadow: 2px 2px 5px 0px rgba(207,207,207,0.27);
   -moz-box-shadow: 2px 2px 5px 0px rgba(207,207,207,0.27);
@@ -18,8 +20,8 @@ body {
 }
 
 .autocomplete-instruction:hover {
-  background-color: grey;
-  color: black;
+  background-color: #381d86;
+  color: white;
 }
 
 #background {
@@ -49,8 +51,11 @@ ul li {
 }
 
 textarea {
+  font-size: 1em;
   width: 500px;
   height: 500px;
+  background-color: #363876;
+  color: white;
 }
 
 a {

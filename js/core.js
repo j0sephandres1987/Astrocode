@@ -1,4 +1,15 @@
 $(document).ready(function (){
+  var NUM_POSITIONS_RIGHT = 6;// Number of images that make up the movement to right
+  var NUM_POSITIONS_LEFT = NUM_POSITIONS_RIGHT + 5;// Number of images that make up the movement to left
+  var dx =7;// the rate of change (speed) horizontal object
+  var J = 0;
+  var K = 0;
+  var contador = 0;
+  var queue = [];
+  var AGTime = 3;
+  var x = 10;// horizontal position of the object (with initial value)
+  var y = 230;// vertical position of the object (with initial value)
+  
   var instructions = ["goRight", "goLeft", "alterGravity"];
   var goRightKeys = [71, 79, 82, 73, 71, 72, 84];
   var goLeftKeys = [71, 79, 76, 69, 70, 84];
@@ -6,6 +17,7 @@ $(document).ready(function (){
   var keyCounter = 0;
   var autocomplete = false;
   var animationStop = false;
+  var currentText = "";
   var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
   var rightAutocomplete = false, leftAutocomplete = false, alterAutocomplete = false;
   
@@ -211,31 +223,146 @@ $(document).ready(function (){
      
   
     }
+//actions
+function ActionCase(object){
+  type= object.type;
+  value= object.value;
+  switch(type){
+    case 0:
+      goRight();
+    break;
+    
+    case 1:
+      goLeft();
+    break;
+    
+    case 3:
+     alterGravity();
+    break;
+    
+    case 4:
+     magnetBoots();
+    break;
+  }
+}
+
+document.addEventListener('call', function (e) { executeInstructions(checkSyntax($("#editor").val())); }, false);
+function executeInstructions(instructions){
+    var InstructionRunEvent = new Event('call');
+        switch (instructions[K].type) {
+
+
+        case 0: //go
+           queue.push(0);
+            if(position >= 7) {
+                if(dx >= 0) {
+                    dx = dx * (-1);8
+
+                }
+
+                num_positions = NUM_POSITIONS_LEFT;
+            } else {
+                num_positions = NUM_POSITIONS_RIGHT
+            }
+            var interval = setInterval(function() {
+                    if (x + astronaut.width < WIDTH){
+                        x += dx;
+                        position++;
+                       if(position == num_positions){
+                           if(position >= 7) {
+                               position = 8;
+                           } else {
+                               position = 2;
+                           }
+                        }
+                        if(J >= (instructions[K].value * 17)) {
+                            //document.onkeyup = true;
+                            clearInterval(interval);
+                            K++;
+                            var delayInterval = setTimeout(function(delayInterval){ clearTimeout(delayInterval);document.dispatchEvent(InstructionRunEvent); }, 500);
+                            if(position >= 7) {
+                                position = 7;
+                            } else {
+                               position = 1;
+                            }
+                            J = 0;
+                        }else {
+                            J++;
+                        }
+                }
+            }, 45);
+            break;
+        case 1: //turnLeft
+            position = 7;
+            dx = dx * (-1);
+
+            queue.push(1);
+
+            K++;
+            var delayInterval = setTimeout(function(delayInterval){ clearTimeout(delayInterval);document.dispatchEvent(InstructionRunEvent); }, 500);
+            break;
+        case 2: //turnRight
+            position = 1;
+            dx = dx * (-1);
+            queue.push(2);
+
+
+            K++;
+            var delayInterval = setTimeout(function(delayInterval){ clearTimeout(delayInterval);document.dispatchEvent(InstructionRunEvent); }, 500);
+            break;
+        default:
+            console.log("default");
+    }
+    //}
+}
+
+function  Action(queue){
+  if(contador!=0 && queue[contador-1].type==3){
+  setTimeout(function(){
+  ActionCase(queue[contador]);
+  contador+=1;
+  if(contador<queue.length){
+    Action(queue);
+  }
   
+  },1000*AGTime);}
+  else{
+    setTimeout(function(){
+    ActionCase(queue[contador]);
+    contador+=1;
+    if(contador<queue.length){
+      Action(queue);
+      }
+    },2000);
+  }
+}
+
 //complier
   $("#run").click(function(event){ 
     event.preventDefault();
     var objectResult = checkSyntax($("#editor").val()); 
-    switch(objectResult[0].type) {
-      case 0:
-          goRight();
-          break;
-      case 1:
-          goLeft();
-          break;
-      default:
-          return null;
-    }
+      if(objectResult != null) {
+        Action(objectResult);
+
+      }
   });
   
   $(document).on('click', '.autocomplete-instruction', function() {
-    $("#editor").val($(this).text());
+    keyCounter = 0;
+    if(currentText != "") {
+      $("#editor").val(currentText+$(this).text());
+    }else {
+      $("#editor").val($(this).text());
+    }
     $(document).find('span').remove();
+    autocomplete = false;
   });
   
   $("#editor").keydown(function(event) {
+      currentText = $("#editor").val();
       if(event.keyCode == 13) {
         keyCounter = 0;
+        $(document).find('span').remove();
       } 
       if(event.keyCode == goRightKeys[keyCounter]) {
         goRightCoincidence = true;
@@ -256,6 +383,7 @@ $(document).ready(function (){
       if(alterGravityCoincidence === true) {
         //console.log(goRight);
         if(autocomplete === false) {
+          keyCounter++;
           autocomplete = $(".editor").append('<span></span>');
         }
         $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[2]+'</li></ul>');
@@ -322,6 +450,7 @@ $(document).ready(function (){
                 instructionResultArray = null;
             }
         }
+        console.log(instructionResultArray);
         return instructionResultArray;
     }
   

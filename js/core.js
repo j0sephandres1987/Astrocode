@@ -10,7 +10,7 @@ $(document).ready(function (){
   var x = 10;// horizontal position of the object (with initial value)
   var y = 230;// vertical position of the object (with initial value)
 
-
+    var obstacle;
   var instructions = ["goRight", "goLeft", "alterGravity", "magneticBoots"];
   var goRightKeys = [71, 79, 82, 73, 71, 72, 84];
   var goLeftKeys = [71, 79, 76, 69, 70, 84];
@@ -37,23 +37,91 @@ $(document).ready(function (){
 
   function preload() {
     //load background image
-    game.load.image("background", "img/bglevel1.jpg");
+    game.load.image("background_1", "img/bglevel1.jpg");
+     game.load.image("background_2", "img/bglevel2.jpg");
+      game.load.image("background_3", "img/bglevel3.jpg");
+      
     game.load.atlasJSONHash('astronaut','img/astroSheet.png', 'astroSheet.json');
     game.load.image("platform", "img/platform.png");
+     game.load.image("obstacle", "img/obstacle.png");
      game.load.spritesheet('key','img/key-spritesheet.png',70,70,11);
       game.load.spritesheet('door','img/door-spritesheet.png',95.5,64)
   }
+  
+
 
   function firstLevel() {
+    background = game.add.tileSprite(0, 0, 600, 800, "background_1");
+    background.fixedToCamera=true;
     platform_1 = game.add.sprite(150,700,'platform');
     platform_2 =game.add.sprite(360,450,'platform');
      platform_3 =game.add.sprite(460,250,'platform');
      platform_4 =game.add.sprite(250,50,'platform');
      key=game.add.sprite(350,400,'key');
     door=game.add.sprite(500,150,'door');
-      astro = game.add.sprite(70, 600, 'astronaut', 0); //Character sprites
-  }
+      astro = game.add.sprite(70, 600, 'astronaut', 0); //Character 
+      
+      
+      // Objects that will enable physics when added to the canvas
 
+     game.physics.enable( [
+            key,
+            door,
+            platform_1,
+            platform_2,
+            platform_3,
+            platform_4
+            ], Phaser.Physics.P2JS);
+
+    //Objects that will be static , wont move under any condition.
+         platform_1.body.static=true;
+         platform_2.body.static=true;
+          platform_3.body.static=true;
+           platform_4.body.static=true;
+           door.body.static=true;
+       }
+   function secondLevel() {
+    background = game.add.tileSprite(0, 0, 600, 800, "background_2");
+    background.fixedToCamera=true;
+    platform_1 = game.add.sprite(150,700,'platform');
+    platform_2 =game.add.sprite(450,700,'platform');
+     platform_3 =game.add.sprite(460,250,'platform');
+     platform_4 =game.add.sprite(150,50,'platform');
+      obstacle =game.add.sprite(350,500,'obstacle');
+     key=game.add.sprite(500,400,'key');
+    door=game.add.sprite(150,120,'door');
+      astro = game.add.sprite(70, 600, 'astronaut', 0); //Character 
+      
+      
+      // Objects that will enable physics when added to the canvas
+
+     game.physics.enable( [
+            key,
+            door,
+            platform_1,
+            platform_2,
+            platform_3,
+            platform_4,
+            obstacle
+            ], Phaser.Physics.P2JS);
+
+    //Objects that will be static , wont move under any condition.
+         platform_1.body.static=true;
+         platform_2.body.static=true;
+          platform_3.body.static=true;
+           platform_4.body.static=true;
+           door.body.static=true
+           
+          
+            obstacle.body.fixedRotation=true;
+             door.body.angle+=180;
+             
+             
+             
+           
+       }
+ 
+   
   function create() {
     game.world.setBounds(0, 0, 600, 1200);
 
@@ -63,17 +131,18 @@ $(document).ready(function (){
 
 //  Create our collision groups.
      var playerCollisionGroup = game.physics.p2.createCollisionGroup();
-      var keyCollisionGroup = game.physics.p2.createCollisionGroup();
+      var keyCollisionGroup = game.physics.p2.createCollisionGroup
+      var obstacleCollisionGroup = game.physics.p2.createCollisionGroup();
  game.physics.p2.updateBoundsCollisionGroup();
- game.physics.p2.updateBoundsCollisionGroup();
 
 
 
 
-    background = game.add.tileSprite(0, 0, 600, 800, "background");
-    background.fixedToCamera=true;
 
-     firstLevel();
+   
+   secondLevel();
+   
+     //firstLevel();
 
   //  astro = game.add.sprite(70, 660, 'astronaut', 0); //Character sprites
     game.physics.p2.enable(astro);
@@ -98,31 +167,20 @@ $(document).ready(function (){
    // setting the mass, if an object collides with another object, the result will be determined by velocity and mass
      astro.body.mass = 0.1;
 
-     // Objects that will enable physics when added to the canvas
-
-     game.physics.enable( [
-            key,
-            door,
-            platform_1,
-            platform_2,
-            platform_3,
-            platform_4
-            ], Phaser.Physics.P2JS);
-
-    //Objects that will be static , wont move under any condition.
-         platform_1.body.static=true;
-         platform_2.body.static=true;
-          platform_3.body.static=true;
-           platform_4.body.static=true;
-           door.body.static=true;
-
+   
 
     //Objects that wont get  angular rotation under any condition
+    
+    //physics
+    
+    
+    
 
        astro.body.fixedRotation=true;
        
        astro.body.createBodyCallback(key,getKey, this);
        astro.body.createBodyCallback(door,finishLevel, this);
+       astro.body.createBodyCallback(obstacle,gameover, this);
         game.physics.p2.setImpactEvents(true);
 
   }
@@ -268,7 +326,13 @@ function getKey(){
 
 
 }
+function gameover(){
+   
+    alert("GAME OVER");
+    astro.destroy();
 
+
+}
 function finishLevel(){
    // key.destroy();
 
@@ -406,7 +470,7 @@ function  Action(queue){
       if(objectResult != null) {
         Action(objectResult);
 
-      }
+      }else{alert("Sintax Error");}
   });
 
   $(document).on('click', '.autocomplete-instruction', function() {

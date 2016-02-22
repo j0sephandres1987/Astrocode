@@ -241,7 +241,7 @@ function ActionCase(object){
     break;
     
     case 4:
-     magnetBoots();
+     magneticBoots();
     break;
   }
 }
@@ -250,8 +250,6 @@ document.addEventListener('call', function (e) { executeInstructions(checkSyntax
 function executeInstructions(instructions){
     var InstructionRunEvent = new Event('call');
         switch (instructions[K].type) {
-
-
         case 0: //go
            queue.push(0);
             if(position >= 7) {
@@ -259,7 +257,6 @@ function executeInstructions(instructions){
                     dx = dx * (-1);8
 
                 }
-
                 num_positions = NUM_POSITIONS_LEFT;
             } else {
                 num_positions = NUM_POSITIONS_RIGHT
@@ -350,7 +347,7 @@ function  Action(queue){
   $(document).on('click', '.autocomplete-instruction', function() {
     keyCounter = 0;
     if(currentText != "") {
-      $("#editor").val(currentText+$(this).text());
+      $("#editor").val(currentText+'\n'+$(this).text());
     }else {
       $("#editor").val($(this).text());
     }
@@ -359,8 +356,8 @@ function  Action(queue){
   });
   
   $("#editor").keydown(function(event) {
-      currentText = $("#editor").val();
       if(event.keyCode == 13) {
+        currentText = $("#editor").val();
         keyCounter = 0;
         $(document).find('span').remove();
       } 

@@ -44,6 +44,7 @@ $(document).ready(function (){
     game.load.atlasJSONHash('astronaut','img/astroSheet.png', 'astroSheet.json');
     game.load.image("platform", "img/platform.png");
      game.load.image("obstacle", "img/obstacle.png");
+      game.load.image("ship", "img/ship.png");
      game.load.spritesheet('key','img/key-spritesheet.png',70,70,11);
       game.load.spritesheet('door','img/door-spritesheet.png',95.5,64)
   }
@@ -80,7 +81,7 @@ $(document).ready(function (){
            platform_4.body.static=true;
            door.body.static=true;
        }
-   function secondLevel() {
+  function secondLevel() {
     background = game.add.tileSprite(0, 0, 600, 800, "background_2");
     background.fixedToCamera=true;
     platform_1 = game.add.sprite(150,700,'platform');
@@ -120,6 +121,50 @@ $(document).ready(function (){
              
            
        }
+  function thirdLevel() {
+    background = game.add.tileSprite(0, 0, 600, 800, "background_3");
+    background.fixedToCamera=true;
+    platform_1 = game.add.sprite(150,700,'platform');
+    platform_2 =game.add.sprite(450,700,'platform');
+     platform_3 =game.add.sprite(500,300,'platform');
+     platform_4 =game.add.sprite(80,300,'platform');
+      obstacle_1 =game.add.sprite(170,500,'obstacle');
+       obstacle_2 =game.add.sprite(400,500,'obstacle');
+     key=game.add.sprite(500,400,'key');
+    door=game.add.sprite(300,100,'ship');
+      astro = game.add.sprite(70, 600, 'astronaut', 0); //Character 
+      
+      
+      // Objects that will enable physics when added to the canvas
+
+     game.physics.enable( [
+            key,
+            door,
+            platform_1,
+            platform_2,
+            platform_3,
+            platform_4,
+            obstacle_1,
+             obstacle_2
+            ], Phaser.Physics.P2JS);
+
+    //Objects that will be static , wont move under any condition.
+         platform_1.body.static=true;
+         platform_2.body.static=true;
+          platform_3.body.static=true;
+           platform_4.body.static=true;
+           door.body.static=true
+           
+          
+            obstacle_1.body.fixedRotation=true;
+             obstacle_2.body.fixedRotation=true;
+            
+              platform_4.body.angle+=180;
+             
+             
+             
+           
+       }
  
    
   function create() {
@@ -140,7 +185,7 @@ $(document).ready(function (){
 
 
    
-   secondLevel();
+   thirdLevel();
    
      //firstLevel();
 
@@ -180,7 +225,8 @@ $(document).ready(function (){
        
        astro.body.createBodyCallback(key,getKey, this);
        astro.body.createBodyCallback(door,finishLevel, this);
-       astro.body.createBodyCallback(obstacle,gameover, this);
+       astro.body.createBodyCallback(obstacle_1,gameover, this);
+       astro.body.createBodyCallback(obstacle_2,gameover, this);
         game.physics.p2.setImpactEvents(true);
 
   }

@@ -192,7 +192,7 @@ $(document).ready(function (){
     music.play();
 
    
-  firstLevel();
+  secondLevel();
    
      //firstLevel();
 

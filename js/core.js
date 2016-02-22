@@ -10,15 +10,16 @@ $(document).ready(function (){
   var x = 10;// horizontal position of the object (with initial value)
   var y = 230;// vertical position of the object (with initial value)
   
-  var instructions = ["goRight", "goLeft", "alterGravity"];
+  var instructions = ["goRight", "goLeft", "alterGravity", "magneticBoots"];
   var goRightKeys = [71, 79, 82, 73, 71, 72, 84];
   var goLeftKeys = [71, 79, 76, 69, 70, 84];
   var alterGravityKeys = [65, 76, 84, 69, 82, 71, 82, 65, 86, 73, 84, 89];
+  var magneticBootsKeys = [77, 65, 71, 78, 69, 84, 73, 67, 66, 79, 79, 84, 83];
   var keyCounter = 0;
   var autocomplete = false;
   var animationStop = false;
   var currentText = "";
-  var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false;
+  var goRightCoincidence = false, goLeftCoincidence = false, alterCoincidence = false, magneticBootsCoincidence=false;
   var rightAutocomplete = false, leftAutocomplete = false, alterAutocomplete = false;
   
   //init canvas
@@ -236,11 +237,11 @@ function ActionCase(object){
       goLeft();
     break;
     
-    case 3:
+    case 2:
      alterGravity();
     break;
     
-    case 4:
+    case 3:
      magneticBoots();
     break;
   }
@@ -386,6 +387,22 @@ function  Action(queue){
         $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[2]+'</li></ul>');
         
       }
+      
+      if(event.keyCode == magneticBootsKeys[keyCounter]) {
+        magneticBootsCoincidence = true;
+      } else {
+        magneticBootsCoincidence = false;
+      }
+      if(magneticBootsCoincidence === true) {
+        //console.log(goRight);
+        if(autocomplete === false) {
+          keyCounter++;
+          autocomplete = $(".editor").append('<span></span>');
+        }
+        $(autocomplete).find('span').html('<ul><li class=autocomplete-instruction>'+instructions[3]+'</li></ul>');
+        
+      }
+      
       if(goRightCoincidence === true && goLeftCoincidence === true) {
         //console.log(goRight);
         if(autocomplete === false) {
@@ -419,7 +436,7 @@ function  Action(queue){
             var codeInstruction = linesCode[i].substring(0, linesCode[i].indexOf("("));
             var value = linesCode[i].substring(linesCode[i].indexOf("(") +1, linesCode[i].lastIndexOf(")"));
             if(
-                codeInstruction == "alterGravity"
+                codeInstruction == "alterGravity" || codeInstruction == "magneticBoots"
                 &&
                 linesCode[i].indexOf(")") == linesCode[i].length - 1
             ) {
